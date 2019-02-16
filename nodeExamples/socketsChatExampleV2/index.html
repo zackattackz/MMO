@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello world</title>
+    <script src = "/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="./style.css" type="text/css"/>
+
+</head>
+<ul id="chatbox"></ul>
+
+<form class="msg-field" onsubmit="return false">
+    <input type="text" id="name" placeholder="Username">
+    <input type="text" id="msg" placeholder="Enter a Message...">
+    <button type="submit" onclick="sendMessage()">Send</button>
+</form>
+
+<script src="chat.js"></script>
+</html>
