@@ -27,6 +27,7 @@ let gameState = {
 
     findWinner: function() { //will search through each player and check if only one is active, if so return that player
                              //id else return empty string
+        if (this.getPlayerCount() <= 1) return "";
         const playerIds = Object.keys(this.state.players);
         let activePlayers = 0;
         let winnerId = "";
