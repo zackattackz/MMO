@@ -1,0 +1,28 @@
+{
+  "name": "mmo",
+  "version": "1.0.0",
+  "description": "flappy bird multiplayer",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AaronSol/MMO.git"
+  },
+  "author": "Zachary Hanham, Aaron Soler, Jordan Bailey",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "http": "0.0.0",
+    "phaser": "^3.16.2",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "jest": "^24.1.0"
+  },
+  "bugs": {
+    "url": "https://github.com/AaronSol/MMO/issues"
+  },
+  "homepage": "https://github.com/AaronSol/MMO#readme"
+}
