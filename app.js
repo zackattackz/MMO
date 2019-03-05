@@ -7,6 +7,15 @@ let gameState = require("./js/gameState");
 
 app.use(express.static(__dirname + '/public'));
 
+//DEMO PURPOSES ONLY
+app.use(express.static(__dirname + '/demo1'));
+
+app.get("/demo", (req, res) => {
+    res.sendFile(__dirname + "/demo1/index.html");
+});
+
+////////////////////
+
 io.on('connection', function (socket) {
     gameState.addPlayer(socket.id);
     console.log(gameState.state);
@@ -15,6 +24,17 @@ io.on('connection', function (socket) {
         console.log('user disconnected');
         gameState.removePlayer(socket.id)
     });
+
+
+    //DEMO ONLY
+    socket.on('getPlayers', () => {
+       io.to(socket.id).emit('receivePlayers', gameState.state.players)
+    });
+
+    socket.on('updatePlayers', info => {
+        gameState.updatePlayer(info.id, info.y, false);
+    });
+    ///////////
 
 });
 
