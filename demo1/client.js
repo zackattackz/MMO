@@ -2,8 +2,8 @@ let socket = io();
 
 //Get elements from HTML
 let playerList = document.getElementById('players');
-var btn = document.getElementById("btn")
-var getPlayers = document.getElementById("getAllPlayerInfo")
+var btn = document.getElementById("btn");
+var getPlayers = document.getElementById("getAllPlayerInfo");
 
 
 socket.on('connect', function () {
@@ -29,11 +29,11 @@ socket.on('receivePlayers', players => {
 
 
 getPlayers.addEventListener("click",() => {
-    socket.emit('getPlayers')
+    socket.emit('getPlayers');
 });
 
 btn.addEventListener("click",() => {
-    var createName = document.getElementById("createPlayerName")
-    let nameOnForm = createName.value
+    var createName = document.getElementById("createPlayerName");
+    let nameOnForm = createName.value;
     socket.emit('createName', {id: socket.id, namePlayerInputed: nameOnForm});
-})
+});
