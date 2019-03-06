@@ -1,6 +1,6 @@
 let gameState = {
     state: { //shared with and changed by clients/server
-        players: {}, //key = socket id of player, value = player info (y pos, isActive...)
+        players: {}, //key = socket id of player, value = player info (name, isActive...)
         pipes: [], //array of pipe objects (info about pipes moving across screen)
         gameIsActive: false
         //TODO: power-ups??
@@ -8,16 +8,16 @@ let gameState = {
     //server only info/methods to change the state var ^^
 
     addPlayer: function(id) {
-        this.state.players[id] = {y: 300, isActive: false}
+        this.state.players[id] = {name: "guest", isActive: false, y:300}
     },
 
     removePlayer: function(id) {
         delete this.state.players[id]
     },
 
-    updatePlayer: function(id, y, isActive) {
+    updatePlayer: function(id, name, isActive) {
       let player = this.state.players[id];
-      player.y = y;
+      player.name = name;
       player.isActive = isActive
     },
 

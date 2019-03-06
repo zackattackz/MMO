@@ -8,14 +8,16 @@
 <body>
 
 <div id="players"></div>
-<button onclick="getPlayers()">Click me to get current player info!</button>
+<button id = "getAllPlayerInfo">Click me to get current player info!</button>
+
 
 <form onsubmit="return false">
-    <input type="text" id="y-input" placeholder="Enter a new y for your player...">
-    <button type="submit" onclick="updatePlayers()">Update!</button>
+    <input type="text" id="createPlayerName" placeholder="Enter a name for your player...">
+    <button id="btn" type="submit">Update!</button>
 </form>
 
 <h3 id="your-id"></h3>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="./client.js"></script>
 </body>
