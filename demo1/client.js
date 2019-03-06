@@ -1,5 +1,10 @@
 let socket = io();
+
+//Get elements from HTML
 let playerList = document.getElementById('players');
+var btn = document.getElementById("btn")
+var getPlayers = document.getElementById("getAllPlayerInfo")
+
 
 socket.on('connect', function () {
     let yourId = document.getElementById("your-id");
@@ -10,21 +15,25 @@ socket.on('connect', function () {
 socket.on('receivePlayers', players => {
     console.log(playerList);
     let result = "";
+    //Loop through all the players in gamestate
     for (let id of Object.keys(players)) {
-        let y = players[id].y;
+        let name = players[id].name;
         let isActive = players[id].isActive;
-        result += "<div style='border: black solid 1px'>player id: " + id + "<br>y: " + y + "<br>isActive: " + isActive +"<br></div>";
+        result += "<div style='border: black solid 1px'>player id: " + id + "<br>Name: " + name + "<br>isActive: " + isActive +"<br></div>";
     }
     playerList.innerHTML = result;
 
 });
 
-function getPlayers() {
-    socket.emit('getPlayers');
-}
 
-function updatePlayers() {
-    let y = document.getElementById("y").value;
-    socket.emit('updatePlayers', {id: socket.id, y: y});
-    y = "";
-}
+
+
+getPlayers.addEventListener("click",() => {
+    socket.emit('getPlayers')
+});
+
+btn.addEventListener("click",() => {
+    var createName = document.getElementById("createPlayerName")
+    let nameOnForm = createName.value
+    socket.emit('createName', {id: socket.id, namePlayerInputed: nameOnForm});
+})
