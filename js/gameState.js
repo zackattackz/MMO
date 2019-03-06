@@ -8,7 +8,7 @@ let gameState = {
     //server only info/methods to change the state var ^^
 
     addPlayer: function(id) {
-        this.state.players[id] = {name: 300, isActive: false}
+        this.state.players[id] = {name: "guest", isActive: false, y: 300}
     },
 
     removePlayer: function(id) {
