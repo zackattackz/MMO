@@ -8,17 +8,18 @@ let gameState = {
     //server only info/methods to change the state var ^^
 
     addPlayer: function(id) {
-        this.state.players[id] = {name: "guest", isActive: false, y:300}
+        this.state.players[id] = {name: "guest", isActive: false, y:300};
     },
 
     removePlayer: function(id) {
-        delete this.state.players[id]
+        delete this.state.players[id];
     },
 
-    updatePlayer: function(id, y, isActive) {
+    updatePlayer: function(id, y, isActive, name = "guest") {
       let player = this.state.players[id];
       player.y = y;
-      player.isActive = isActive
+      player.name = name;
+      player.isActive = isActive;
     },
 
     getPlayerCount: function() { //returns number of players

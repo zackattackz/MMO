@@ -18,7 +18,7 @@ app.get("/demo", (req, res) => {
 
 io.on('connection', function (socket) {
     //Add current new user to gameState
-    gameState.addPlayer(socket.id)
+    gameState.addPlayer(socket.id);
     console.log(gameState.state);
 
     socket.on('disconnect', function () {
@@ -29,11 +29,11 @@ io.on('connection', function (socket) {
     //DEMO ONLY
     socket.on('getPlayers', () => {
         //send gamestate players only to the user that requested them
-       io.to(socket.id).emit('receivePlayers', gameState.state.players)
+       io.to(socket.id).emit('receivePlayers', gameState.state.players);
     });
 
     socket.on('createName', (info) => {
-        gameState.updatePlayer(info.id, info.namePlayerInputed, false);
+        gameState.updatePlayer(info.id, info.y, false, info.name);
     })
 
 
