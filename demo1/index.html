@@ -6,18 +6,17 @@
 </head>
 
 <body>
-<script src="/socket.io/socket.io.js"></script>
 
 <div id="players"></div>
 <button onclick="getPlayers()">Click me to get current player info!</button>
 
 <form onsubmit="return false">
-    <input type="text" id="y" placeholder="Enter a new y for your player...">
+    <input type="text" id="y-input" placeholder="Enter a new y for your player...">
     <button type="submit" onclick="updatePlayers()">Update!</button>
 </form>
 
-<script src="/socket.io/socket.io.js"></script>
 <h3 id="your-id"></h3>
+<script src="/socket.io/socket.io.js"></script>
 <script src="./client.js"></script>
 </body>
 

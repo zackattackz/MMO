@@ -8,7 +8,6 @@ socket.on('connect', function () {
 
 
 socket.on('receivePlayers', players => {
-    console.log(playerList);
     let result = "";
     for (let id of Object.keys(players)) {
         let y = players[id].y;
@@ -24,7 +23,7 @@ function getPlayers() {
 }
 
 function updatePlayers() {
-    let y = document.getElementById("y").value;
-    socket.emit('updatePlayers', {id: socket.id, y: y});
-    y = "";
+    let yInput = document.getElementById("y-input");
+    socket.emit('updatePlayers', {id: socket.id, y: yInput.value});
+    yInput.value = "";
 }

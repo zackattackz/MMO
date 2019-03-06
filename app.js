@@ -18,7 +18,6 @@ app.get("/demo", (req, res) => {
 
 io.on('connection', function (socket) {
     gameState.addPlayer(socket.id);
-    console.log(gameState.state);
 
     socket.on('disconnect', function () {
         console.log('user disconnected');
