@@ -3,7 +3,7 @@ let gameState = require("../js/gameState");
 test("addPlayer method will add a player to state.players", () => {
     gameState.addPlayer("testID");
     expect(gameState.state.players).toEqual({
-        "testID": {y: 300, isActive: false}  //testID should map to a new player
+        "testID": {name: "guest", y: 300, isActive: false}  //testID should map to a new player
     });
 });
 
@@ -16,7 +16,7 @@ test("updatePlayer will update a player given an id, new y, and new isActive", (
     gameState.addPlayer("testID");
     gameState.updatePlayer("testID", 50, true);
     expect(gameState.state.players).toEqual({
-        "testID": {y: 50, isActive: true}  //testID player should have updated values
+        "testID": {name: "guest",y: 50, isActive: true}  //testID player should have updated values
     });
 });
 
