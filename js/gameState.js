@@ -15,9 +15,9 @@ let gameState = {
         delete this.state.players[id]
     },
 
-    updatePlayer: function(id, name, isActive) {
+    updatePlayer: function(id, y, isActive) {
       let player = this.state.players[id];
-      player.name = name;
+      player.y = y;
       player.isActive = isActive
     },
 
