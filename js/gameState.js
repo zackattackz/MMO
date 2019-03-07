@@ -15,10 +15,19 @@ let gameState = {
         delete this.state.players[id];
     },
 
-    updatePlayer: function(id, y, isActive) {
-      let player = this.state.players[id];
-      player.y = y;
-      player.isActive = isActive;
+    updateY: function(id ,y) {
+        let player = this.state.players[id];
+        player.y = y;
+    },
+
+    updateName: function(id, name) {
+        let player = this.state.players[id];
+        player.name = name;
+    },
+
+    updateIsActive: function(id, isActive) {
+        let player = this.state.players[id];
+        player.isActive = isActive;
     },
 
     getPlayerCount: function() { //returns number of players

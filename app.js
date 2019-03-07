@@ -26,6 +26,10 @@ io.on('connection', function (socket) {
         gameState.removePlayer(socket.id)
     });
 
+    socket.on('updateY', y => {
+       gameState.updateY(socket.id, y);
+    });
+
     //DEMO ONLY
     socket.on('getPlayers', () => {
         //send gamestate players only to the user that requested them
