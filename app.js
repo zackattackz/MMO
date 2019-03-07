@@ -19,7 +19,9 @@ app.get("/demo", (req, res) => {
 io.on('connection', function (socket) {
     //Add current new user to gameState
     gameState.addPlayer(socket.id);
-    console.log(gameState.state);
+
+    //broadcast new player joined event
+    socket.broadcast.emit('playerJoined', gameState.state.players);
 
     socket.on('disconnect', function () {
         console.log('user disconnected');
@@ -30,15 +32,30 @@ io.on('connection', function (socket) {
        gameState.updateY(socket.id, y);
     });
 
+    socket.on('updateIsActive', isActive => {
+        gameState.updateIsActive(socket.id, isActive);
+        socket.broadcast.emit('playerChangedActive', gameState.state.players);
+    });
+
+    socket.on('updateName', name => {
+        gameState.updateName(socket.id, name);
+    });
+
+
     //DEMO ONLY
-    socket.on('getPlayers', () => {
+    socket.on('getInitialPlayers', () => {
         //send gamestate players only to the user that requested them
        io.to(socket.id).emit('receivePlayers', gameState.state.players);
     });
 
     socket.on('updatePlayer', (info) => {
         gameState.updatePlayer(info.id, info.y, false);
-    })
+    });
+
+    socket.on('updateY', y => {
+       gameState.updateY(socket.id, y);
+       socket.broadcast.emit("playerMoved", gameState.state.players); //send updated players to all other players
+    });
 
 
 });

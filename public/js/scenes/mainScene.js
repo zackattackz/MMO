@@ -10,7 +10,7 @@ class mainScene extends Phaser.Scene {
     create() {
         this.socket = io();
 
-        this.socket.emit("getPlayers");
+        this.socket.emit("getInitialPlayers");
         this.socket.on("receivePlayers", players => {
             Object.keys(players).forEach(id => {
                 if (id === this.socket.id) {
@@ -33,7 +33,7 @@ class mainScene extends Phaser.Scene {
     update(dt) {
         if (this.player) {
             if (!this.player.isActive) {
-                this.socket.emit("updatePlayer", {id: this.socket.id, y: this.player.body.y});
+                this.socket.emit("updateY", this.player.body.y);
             }
         }
     }
