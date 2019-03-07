@@ -14,7 +14,7 @@ class mainScene extends Phaser.Scene {
         this.socket.on("receivePlayers", players => {
             Object.keys(players).forEach(id => {
                 if (id === this.socket.id) {
-                    if (players[id].isActive) {
+                    if (!players[id].isActive) {
                         this.player = this.physics.add.image(100, players[id].y, "player");
                         this.player.body.collideWorldBounds = true;
                         this.player.isActive = true
@@ -25,14 +25,14 @@ class mainScene extends Phaser.Scene {
 
 
         this.key_space = this.input.keyboard.on('keydown_SPACE', event => {
-            this.player.setVelocity(0, -380);
+            this.player.setVelocity(0, -420);
         });
 
     }
 
     update(dt) {
         if (this.player) {
-            if (this.player.isActive) {
+            if (!this.player.isActive) {
                 this.socket.emit("updatePlayer", {id: this.socket.id, y: this.player.body.y});
             }
         }
