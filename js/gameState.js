@@ -15,10 +15,9 @@ let gameState = {
         delete this.state.players[id];
     },
 
-    updatePlayer: function(id, y, isActive, name = "guest") {
+    updatePlayer: function(id, y, isActive) {
       let player = this.state.players[id];
       player.y = y;
-      player.name = name;
       player.isActive = isActive;
     },
 

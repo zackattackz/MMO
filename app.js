@@ -32,8 +32,8 @@ io.on('connection', function (socket) {
        io.to(socket.id).emit('receivePlayers', gameState.state.players);
     });
 
-    socket.on('createName', (info) => {
-        gameState.updatePlayer(info.id, info.y, false, info.name);
+    socket.on('updatePlayer', (info) => {
+        gameState.updatePlayer(info.id, info.y, false);
     })
 
 

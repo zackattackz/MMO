@@ -4,7 +4,7 @@ class mainScene extends Phaser.Scene {
     }
 
     preload(){
-        this.load.image('player', 'assets/player.png')
+        this.load.image('player', 'assets/player.png');
     }
 
     create() {
@@ -14,20 +14,27 @@ class mainScene extends Phaser.Scene {
         this.socket.on("receivePlayers", players => {
             Object.keys(players).forEach(id => {
                 if (id === this.socket.id) {
-                    this.player = this.physics.add.sprite(100, players[id].y, "player")
-                    this.player.body.collideWorldBounds = true
-                    this.player.alpha = 1
+                    if (players[id].isActive) {
+                        this.player = this.physics.add.image(100, players[id].y, "player");
+                        this.player.body.collideWorldBounds = true;
+                        this.player.isActive = true
+                    }
                 }
             })
         });
 
 
         this.key_space = this.input.keyboard.on('keydown_SPACE', event => {
-            this.player.setVelocity(0, -380)
+            this.player.setVelocity(0, -380);
         });
+
     }
 
     update(dt) {
-
+        if (this.player) {
+            if (this.player.isActive) {
+                this.socket.emit("updatePlayer", {id: this.socket.id, y: this.player.body.y});
+            }
+        }
     }
 }
