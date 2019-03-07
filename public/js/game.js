@@ -1,12 +1,13 @@
 let config = {
     type: Phaser.AUTO,
-    width: 800,
+    backgroundColor: "#4488AA",
+    width: 900,
     height: 600,
     physics: {
         default: 'arcade',
         arcade: {
             debug: true,
-            gravity: {y : 200}
+            gravity: {y : 1300}
         }
     },
     scene: [mainScene]
