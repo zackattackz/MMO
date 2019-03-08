@@ -36,5 +36,6 @@ btn.addEventListener("click",() => {
     var createName = document.getElementById("createPlayerName");
     let nameOnForm = createName.value;
     socket.emit('updateName', nameOnForm);
+    socket.emit('getInitialPlayers');
     createName.value = "";
 });
