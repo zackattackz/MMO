@@ -63,7 +63,9 @@ class mainScene extends Phaser.Scene {
         //If a new player joins the server, this event will be sent to client
         this.socket.on('playerJoined', player => {
             //Just add that new player just like how the initial players were added
+            //if(player.isActive) {}
             this.addOtherPlayer(player)
+
         });
 
         //If another player moves, their move is updated on server, then server sends this event to client
