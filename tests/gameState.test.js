@@ -55,4 +55,7 @@ test("findWinner will return a winner's id, or if no winner then ''", () => {
     gameState.updateIsActive("testID2", false);
 
     expect(gameState.findWinner()).toBe(""); //no active players means no winner
+
+    gameState.removePlayer("testID");
+    gameState.removePlayer("testID2");
 });
