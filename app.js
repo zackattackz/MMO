@@ -17,24 +17,44 @@ app.get("/demo", (req, res) => {
 ////////////////////
 
 io.on('connection', function (socket) {
+    console.log("user connected");
     //Add current new user to gameState
     gameState.addPlayer(socket.id);
-    console.log(gameState.state);
+
+    //broadcast new player joined event
+    socket.broadcast.emit('playerJoined', gameState.state.players[socket.id]);
 
     socket.on('disconnect', function () {
         console.log('user disconnected');
-        gameState.removePlayer(socket.id)
+        socket.broadcast.emit("playerLeft", gameState.state.players[socket.id]);
+        gameState.removePlayer(socket.id);
+    });
+
+
+    socket.on('updateIsActive', isActive => {
+        gameState.updateIsActive(socket.id, isActive);
+        socket.broadcast.emit('playerChangedActive', gameState.state.players[socket.id]);
+    });
+
+    socket.on('updateY', y => {
+        gameState.updateY(socket.id, y);
+        socket.broadcast.emit("playerMoved", gameState.state.players[socket.id]); //send updated player to all other players
+    });
+
+
+    socket.on('updateName', name => {
+        gameState.updateName(socket.id, name);
+    });
+
+    //send gamestate players only to the user that requested them
+    socket.on('getInitialPlayers', () => {
+        io.to(socket.id).emit('receivePlayers', gameState.state.players);
     });
 
     //DEMO ONLY
-    socket.on('getPlayers', () => {
-        //send gamestate players only to the user that requested them
-       io.to(socket.id).emit('receivePlayers', gameState.state.players);
+    socket.on('updatePlayer', (info) => {
+        gameState.updatePlayer(info.id, info.y, false);
     });
-
-    socket.on('createName', (info) => {
-        gameState.updatePlayer(info.id, info.y, false, info.name);
-    })
 
 
 });

@@ -29,12 +29,13 @@ socket.on('receivePlayers', players => {
 
 
 getPlayers.addEventListener("click",() => {
-    socket.emit('getPlayers')
+    socket.emit('getInitialPlayers')
 });
 
 btn.addEventListener("click",() => {
     var createName = document.getElementById("createPlayerName");
     let nameOnForm = createName.value;
-    socket.emit('createName', {id: socket.id, name: nameOnForm});
+    socket.emit('updateName', nameOnForm);
+    socket.emit('getInitialPlayers');
     createName.value = "";
 });
