@@ -37,6 +37,16 @@ class mainScene extends Phaser.Scene {
                 if (this.pingInterval++ === 1) {
                     this.socket.emit("updateY", this.player.body.y + this.HALFHEIGHT);//add 20 bc its offset from center
                     this.pingInterval = 0
+                    //console.log(this.player.isActive)
+                }
+                this.otherPlayers.getChildren().forEach(otherPlayer => {
+                    console.log(otherPlayer.playerInfo.isActive)
+                })
+            } else {
+                if(this.checkPlayersAreActive()) {
+                    //Handle if there are other active players
+                } else {
+                    //Handle if there aren't any other active players
                 }
             }
         }
@@ -52,5 +62,17 @@ class mainScene extends Phaser.Scene {
             this.player.setDepth(1)
         }
 
+    }
+
+    checkPlayersAreActive(otherPlayers) {
+        let activeOtherPlayersCount = 0;
+        otherPlayers.getChildren().forEach(otherPlayer => {
+            if (otherPlayer.playerInfo.isActive) {
+                activeOtherPlayersCount++;
+            }
+        });
+
+        //returns true if there are any other active players, false otherwise
+        return activeOtherPlayersCount !== 0
     }
 }
