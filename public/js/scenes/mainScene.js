@@ -1,4 +1,4 @@
-class mainScene extends Phaser.Scene {
+ class mainScene extends Phaser.Scene {
     constructor(){
         super({key: "mainScene"});
     }
@@ -35,18 +35,21 @@ class mainScene extends Phaser.Scene {
                     this.player.setVelocity(0, -420);
                 }
                 if (this.pingInterval++ === 1) {
+                    //sent to app.js
                     this.socket.emit("updateY", this.player.body.y + this.HALFHEIGHT);//add 20 bc its offset from center
                     this.pingInterval = 0
                 }
             }
         }
-    }
 
+    }
+    //only triggered when a new player joins, make sure all properties of player match those in receivePlayers
     addOtherPlayer(playerInfo) {
         const randomColor = Math.floor(Math.random()*16777215);
         const otherPlayer = this.add.image(100, playerInfo.y, 'player').setTint(randomColor);
         otherPlayer.alpha = 0.3;
         otherPlayer.playerInfo = playerInfo;
+        //add player to the group defined above
         this.otherPlayers.add(otherPlayer);
         if(this.player){
             this.player.setDepth(1)

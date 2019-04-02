@@ -18,10 +18,10 @@ app.get("/demo", (req, res) => {
 
 io.on('connection', function (socket) {
     console.log("user connected");
-    //Add current new user to gameState
+    //Add current new user to gameState, isActive set to False, name = guest
     gameState.addPlayer(socket.id);
 
-    //broadcast new player joined event
+    //broadcast new player joined event, adds player to the group in mainScene
     socket.broadcast.emit('playerJoined', gameState.state.players[socket.id]);
 
     socket.on('disconnect', function () {

@@ -1,10 +1,11 @@
 function initializeSocketOnEvents(scene) {
     //First, request the players already in the server's state's player object (including the current player)
+    //triggers receivePlayers for this player
     scene.socket.emit("getInitialPlayers");
 
     //When we receive the response from the server, fire a callback function with the received players object
     //For info on players object see MMO/js/gameState.js
-
+    //triggered by getInitialPlayers
     scene.socket.on("receivePlayers", players => { //begin callback
 
         //For each id in the players object (ids are stored as keys), do the following
@@ -23,8 +24,30 @@ function initializeSocketOnEvents(scene) {
                     //Enable collisions with the edges of the world
                     scene.player.body.collideWorldBounds = true;
 
+
+
                     //TODO: Set isActive to true for now, remove scene later when isActive is properly implemented
                     scene.player.isActive = true
+
+
+
+                    // Turn on wall collision checking for your sprite
+                    scene.player.setCollideWorldBounds(true);
+
+                     scene.player.body.onWorldBounds = true;
+
+                     scene.player.body.world.on('worldbounds', function(body) {
+                        // Check if the body's game object is the sprite you are listening for
+                            // Stop physics and render updates for this object
+                            scene.player.isActive = false;
+                            console.log(scene.player.isActive)
+                        scene.player.setVisible(false)
+                        }
+                    );
+
+
+
+
                 }
                 //If the id does not match the id of the CURRENT PLAYER connection
             } else {
@@ -45,6 +68,7 @@ function initializeSocketOnEvents(scene) {
 
     scene.socket.on("playerLeft", playerWhoLeft => {
         (scene.otherPlayers.getChildren().forEach( player => {
+            //Since player is destroyed they will no longer appear as an image
             if(player.playerInfo.id === playerWhoLeft.id) player.destroy()
         }));
     });

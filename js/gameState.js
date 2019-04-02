@@ -1,6 +1,6 @@
 let gameState = {
     state: { //shared with and changed by clients/server
-        players: {}, //key = socket id of player, value = player info (name, isActive...)
+        players: {}, //key = socket id of player, value = {name: "guest", isActive: false, y:300, id: id}
         pipes: [], //array of pipe objects (info about pipes moving across screen)
         gameIsActive: false
         //TODO: power-ups??
