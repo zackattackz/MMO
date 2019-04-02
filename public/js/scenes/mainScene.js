@@ -44,7 +44,7 @@
                     console.log(otherPlayer.playerInfo.isActive)
                 })
             } else {
-                if(this.checkPlayersAreActive()) {
+                if(this.checkPlayersAreActive(this.otherPlayers)) {
                     //Handle if there are other active players
                 } else {
                     //Handle if there aren't any other active players
