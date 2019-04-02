@@ -24,8 +24,6 @@ function initializeSocketOnEvents(scene) {
                     //Enable collisions with the edges of the world
                     scene.player.body.collideWorldBounds = true;
 
-
-
                     //TODO: Set isActive to true for now, remove scene later when isActive is properly implemented
                     scene.player.isActive = true
 
