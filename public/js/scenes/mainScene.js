@@ -22,11 +22,19 @@
         //initialize a group to later be used to store every player EXCEPT the one currently playing
         this.otherPlayers = this.add.group();
 
+        this.pipes = this.add.group();
+
         initializeSocketOnEvents(this);
 
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        this.pingInterval = 0
+        this.pingInterval = 0;
+
+        if(this.player) {
+            this.physics.add.overlap(this.player, this.pipes, function () {
+                console.log('overlapped')
+            }, null, this);
+        }
     }
 
     update(dt) {
@@ -82,7 +90,42 @@
         return activeOtherPlayersCount !== 0
     }
 
+     addOnePipe(x, y) {
+         // Create a pipe at the position x and y
+         let pipe = this.physics.add.sprite(x, y, 'pipe');
+         pipe.body.setAllowGravity(false);
+         // Add the pipe to our previously created group
+         this.pipes.add(pipe);
+
+
+         // Add velocity to the pipe to make it move left
+         pipe.body.velocity.x = -200;
+
+         // Automatically kill the pipe when it's no longer visible
+         pipe.checkWorldBounds = true;
+         pipe.outOfBoundsKill = true;
+     }
+
     createPipes(holePosition) {
         //create pipe row
+        for (var i = 0; i < 5; i++) {
+            if (i !== holePosition)
+                this.addOnePipe(900, i * 120 + 60);
+
+        }
     }
+
+     killPlayer(body) {
+         // Check if the body's game object is the sprite you are listening for
+         // Stop physics and render updates for this object
+         if (this.player) {
+             if (this.player.isActive) {
+                 this.player.isActive = false;
+                 this.player.setVisible(false);
+                 this.socket.emit('updateIsActive', false);
+             }
+         }
+     }
+
+
 }
