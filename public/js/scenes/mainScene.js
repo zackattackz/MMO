@@ -29,12 +29,6 @@
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.pingInterval = 0;
-
-        if(this.player) {
-            this.physics.add.overlap(this.player, this.pipes, function () {
-                console.log('overlapped')
-            }, null, this);
-        }
     }
 
     update(dt) {

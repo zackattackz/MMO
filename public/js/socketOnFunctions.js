@@ -24,10 +24,17 @@ function initializeSocketOnEvents(scene) {
                     //Enable collisions with the edges of the world
                     scene.player.body.collideWorldBounds = true;
 
-                    //TODO: Set isActive to true for now, remove scene later when isActive is properly implemented
-                    scene.player.isActive = true
+                    scene.physics.add.overlap(scene.player, scene.pipes, function () {
+                        console.log('overlapped');
+                        console.log(scene.player.isActive)
+                        if(scene.player.isActive) {
+                            scene.player.isActive = false;
+                            scene.player.setVisible(false);
+                            scene.socket.emit('updateIsActive', false);
+                        }
+                    }, null, scene);
 
-
+                    scene.player.isActive = true;
 
                     // Turn on wall collision checking for your sprite
                     scene.player.setCollideWorldBounds(true);
