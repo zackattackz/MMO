@@ -13,8 +13,8 @@ function initializeSocketOnEvents(scene) {
 
             //If the id matches the id of the CURRENT PLAYER connection
             if (playerInfo.id === scene.socket.id) {
-                // if the current player is active TODO: For now since every player is always inactive, use !... but later when isActive is implemented remove the !
-                if (!playerInfo.isActive) {
+                // if the current player is active
+                if (playerInfo.isActive) {
                     //Add a new physics object with the image of player.png, set it to scene.player (a variable)
                     scene.player = scene.physics.add.image(100, playerInfo.y, "player");
 
@@ -32,16 +32,17 @@ function initializeSocketOnEvents(scene) {
                     // Turn on wall collision checking for your sprite
                     scene.player.setCollideWorldBounds(true);
 
-                     scene.player.body.onWorldBounds = true;
+                    scene.player.body.onWorldBounds = true;
 
-                     scene.player.body.world.on('worldbounds', function(body) {
+                    scene.player.body.world.on('worldbounds', function(body) {
                         // Check if the body's game object is the sprite you are listening for
-                            // Stop physics and render updates for this object
+                        // Stop physics and render updates for this object
+                        if(scene.player.isActive) {
                             scene.player.isActive = false;
-                            console.log(scene.player.isActive)
-                        scene.player.setVisible(false)
-                        }
-                    );
+                            scene.player.setVisible(false);
+                            scene.socket.emit('updateIsActive', false);
+                         }
+                    });
 
 
 
@@ -50,17 +51,14 @@ function initializeSocketOnEvents(scene) {
                 //If the id does not match the id of the CURRENT PLAYER connection
             } else {
                 // if the other player is active TODO: For now since every player is always inactive, use !... but later when isActive is implemented remove the !
-                if(!playerInfo.isActive) {
-                    //Call scene.addOtherPlayers with an argument of the other player's info
-                    scene.addOtherPlayer(playerInfo);
-                    //scene.addOtherPlayer is defined after update method
-                }
+                //Call scene.addOtherPlayers with an argument of the other player's info
+                scene.addOtherPlayer(playerInfo);
+                //scene.addOtherPlayer is defined after update method
             }
         })
     });
     scene.socket.on('playerJoined', player => {
         //Just add that new player just like how the initial players were added
-        //if(player.isActive) {}
         scene.addOtherPlayer(player)
     });
 
@@ -84,5 +82,20 @@ function initializeSocketOnEvents(scene) {
             }
         });
     });
+
+    scene.socket.on('playerChangedActive', playerWhoChangedIsActive => {
+        scene.otherPlayers.getChildren().forEach( player => {
+            //If the playerWhoChangedIsActive's id matched the id of one of the otherPlayer's children
+            if (playerWhoChangedIsActive.id === player.playerInfo.id) {
+                //Set that players info to the updated info
+                player.playerInfo = playerWhoChangedIsActive;
+                player.alpha = 0.0;
+            }
+        });
+    });
+
+    scene.socket.on('createPipes', hole => {
+        scene.createPipes(hole);
+    })
 
 }

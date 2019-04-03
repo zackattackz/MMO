@@ -8,6 +8,7 @@
      */
     preload(){
         this.load.image('player', 'assets/player.png'); //load player.png as 'player'
+        this.load.image('pipe', 'assets/pipe.png'); //load pipe.png as 'pipe'
 
     }
 
@@ -38,11 +39,7 @@
                     //sent to app.js
                     this.socket.emit("updateY", this.player.body.y + this.HALFHEIGHT);//add 20 bc its offset from center
                     this.pingInterval = 0
-                    //console.log(this.player.isActive)
                 }
-                this.otherPlayers.getChildren().forEach(otherPlayer => {
-                    console.log(otherPlayer.playerInfo.isActive)
-                })
             } else {
                 if(this.checkPlayersAreActive(this.otherPlayers)) {
                     //Handle if there are other active players
@@ -57,7 +54,13 @@
     addOtherPlayer(playerInfo) {
         const randomColor = Math.floor(Math.random()*16777215);
         const otherPlayer = this.add.image(100, playerInfo.y, 'player').setTint(randomColor);
-        otherPlayer.alpha = 0.3;
+        if(playerInfo.isActive) {
+            otherPlayer.alpha = 0.3;
+            console.log('activejoined')
+        } else {
+            console.log('inactivejoined')
+            otherPlayer.alpha = 0.0;
+        }
         otherPlayer.playerInfo = playerInfo;
         //add player to the group defined above
         this.otherPlayers.add(otherPlayer);
@@ -77,5 +80,9 @@
 
         //returns true if there are any other active players, false otherwise
         return activeOtherPlayersCount !== 0
+    }
+
+    createPipes(holePosition) {
+        //create pipe row
     }
 }

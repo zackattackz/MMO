@@ -59,6 +59,13 @@ io.on('connection', function (socket) {
 
 });
 
+function sendPipeInfo(){
+
+    io.emit('createPipes', Math.floor(Math.random() * 5))
+}
+setInterval(sendPipeInfo, 3000);
+
+
 server.listen(8081, function () {
     console.log(`Listening on ${server.address().port}`);
 });
