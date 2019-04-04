@@ -24,15 +24,14 @@ function initializeSocketOnEvents(scene) {
                     //Enable collisions with the edges of the world
                     scene.player.body.collideWorldBounds = true;
 
-                    scene.physics.add.overlap(scene.player, scene.pipes, function () {
-                        console.log('overlapped');
-                        console.log(scene.player.isActive)
+                    scene.physics.add.overlap(scene.player, scene.pipes, () => {
                         if(scene.player.isActive) {
+                            console.log('overlapped');
                             scene.player.isActive = false;
                             scene.player.setVisible(false);
                             scene.socket.emit('updateIsActive', false);
                         }
-                    }, null, scene);
+                    });
 
                     scene.player.isActive = true;
 
