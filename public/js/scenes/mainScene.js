@@ -104,7 +104,7 @@
         //create pipe row
         for (var i = 0; i < 5; i++) {
             if (i !== holePosition)
-                this.addOnePipe(900, i * 120 + 60);
+                this.addOnePipe(960, i * 120 + 60);
 
         }
     }

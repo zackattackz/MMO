@@ -24,14 +24,16 @@ function initializeSocketOnEvents(scene) {
                     //Enable collisions with the edges of the world
                     scene.player.body.collideWorldBounds = true;
 
-                    scene.physics.add.overlap(scene.player, scene.pipes, () => {
+                    let death = function() {
                         if(scene.player.isActive) {
                             console.log('overlapped');
                             scene.player.isActive = false;
                             scene.player.setVisible(false);
                             scene.socket.emit('updateIsActive', false);
                         }
-                    });
+                    };
+
+                    scene.physics.add.overlap(scene.player, scene.pipes, death);
 
                     scene.player.isActive = true;
 
@@ -40,15 +42,7 @@ function initializeSocketOnEvents(scene) {
 
                     scene.player.body.onWorldBounds = true;
 
-                    scene.player.body.world.on('worldbounds', function(body) {
-                        // Check if the body's game object is the sprite you are listening for
-                        // Stop physics and render updates for this object
-                        if(scene.player.isActive) {
-                            scene.player.isActive = false;
-                            scene.player.setVisible(false);
-                            scene.socket.emit('updateIsActive', false);
-                         }
-                    });
+                    scene.player.body.world.on('worldbounds', death);
 
 
 

@@ -8,8 +8,11 @@ test("connection is established, player is added, so getPlayers should have a ke
     let socket = require('socket.io-client')('http://localhost:8081');
     socket.emit("getInitialPlayers");
     socket.on("receivePlayers", players => {
-       expect(players[socket.id]).toBe({name: "guest", isActive: false, y:300})
+       // expect(players[socket.id]).toBe({name: "guest", isActive: false, y:300})
+        console.log(players)
+        expect(players[socket.id]).toBe(2)
     });
+    console.log("hi")
 });
 
 test("two connections are established, first connection receives playerJoined event and adds the new player", () => {

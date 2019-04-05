@@ -32,6 +32,7 @@ io.on('connection', function (socket) {
 
 
     socket.on('updateIsActive', isActive => {
+        console.log('user died');
         gameState.updateIsActive(socket.id, isActive);
         socket.broadcast.emit('playerChangedActive', gameState.state.players[socket.id]);
     });
