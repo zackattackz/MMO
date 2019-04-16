@@ -17,6 +17,7 @@ app.get("/demo", (req, res) => {
 ////////////////////
 
 io.on('connection', function (socket) {
+
     console.log("user connected");
     //Add current new user to gameState, isActive set to False, name = guest
     gameState.addPlayer(socket.id);
@@ -32,8 +33,8 @@ io.on('connection', function (socket) {
 
 
     socket.on('updateIsActive', isActive => {
-        console.log('user died');
         gameState.updateIsActive(socket.id, isActive);
+        console.log(isActive);
         socket.broadcast.emit('playerChangedActive', gameState.state.players[socket.id]);
     });
 
@@ -60,15 +61,54 @@ io.on('connection', function (socket) {
 
 });
 
-function sendPipeInfo(){
+let playerCheckInterval = null;
+let pipeEmitInterval = null;
 
-    io.emit('createPipes', Math.floor(Math.random() * 5))
+let countDownTime = 5.0;
+
+function startPlayerCheckInterval() {
+    playerCheckInterval = setInterval(() => {
+        let playerNum = Object.keys(gameState.state.players).length;
+        if (playerNum === 0) {
+            //do nothing
+        } else if(playerNum === 1) {
+            io.emit('showWaitingForPlayers');
+        } else {
+            clearInterval(playerCheckInterval);
+            io.emit('countDownStarted');
+
+            countDownTime = 5.0;
+
+            let countDownTimer = setInterval(() => {
+                io.emit('countDownTime', countDownTime);
+                countDownTime -= 1;
+            }, 1000);
+
+            setTimeout(() => {
+                clearInterval(countDownTimer);
+                startGame();
+            }, 6000)
+        }
+    }, 10)
 }
-setInterval(sendPipeInfo, 3000);
 
+function startGame() {
+
+    io.emit('startGame');
+    startPipeEmitInterval();
+}
+
+
+
+function startPipeEmitInterval() {
+    pipeEmitInterval = setInterval(() => io.emit('createPipes', Math.floor(Math.random() * 5)), 3000);
+}
 
 server.listen(8081, function () {
     console.log(`Listening on ${server.address().port}`);
 });
+
+
+startPlayerCheckInterval();
 
 

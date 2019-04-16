@@ -9,10 +9,10 @@ test("connection is established, player is added, so getPlayers should have a ke
     socket.emit("getInitialPlayers");
     socket.on("receivePlayers", players => {
        // expect(players[socket.id]).toBe({name: "guest", isActive: false, y:300})
-        console.log(players)
+       //  console.log(players)
         expect(players[socket.id]).toBe(2)
     });
-    console.log("hi")
+    // console.log("hi")
 });
 
 test("two connections are established, first connection receives playerJoined event and adds the new player", () => {
@@ -60,19 +60,3 @@ test("Disconnect", () => {
         expect(gameState.state.players[socketID]).toBe(null)//expect socket to no longer exist in gameState
     });
 });
-
-test("PipeHole", () => {
-    let socket = require('socket.io-client')('http://localhost:8081');
-    socket.io.emit('createPipes');
-    let socketID = socket.id;
-     socket.on("createPipes", (hole) => {
-        expect(hole).toBe(hole<6 && hole>0)//expect hole between 1 and 6
-    });
-});
-
-//Doesn't work because scene isn't defined
-// test("createPipes", () => {
-//     let socket = require('socket.io-client')('http://localhost:8081');
-//           expect(scene.createPipes(2)).toBe(this.pipes[0].y == 360 && this.pipes[0].x == 900 && this.pipes[0].velocity.x == 900)//ex pect hole between 1 and 6
-//
-// });

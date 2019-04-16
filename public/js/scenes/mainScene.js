@@ -24,6 +24,12 @@
 
         this.pipes = this.add.group();
 
+        this.waitingText = this.add.text(225,150, "WAITING FOR PLAYERS...", { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"});
+        this.waitingText.alpha = 0.0;
+
+        this.countDownText = this.add.text(225,150, "", { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"});
+        this.countDownText.alpha = 0.0;
+
         initializeSocketOnEvents(this);
 
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -50,6 +56,11 @@
                 }
             }
         }
+        //
+        // if(this.countDownHappening) {
+        //     this.countDownTime -= 1/60;
+        //     this.countDownText.setText("GAME START IN " + Math.ceil(this.countDownTime))
+        // }
 
     }
     //only triggered when a new player joins, make sure all properties of player match those in receivePlayers
@@ -60,7 +71,7 @@
             otherPlayer.alpha = 0.3;
             console.log('activejoined')
         } else {
-            console.log('inactivejoined')
+            console.log('inactivejoined');
             otherPlayer.alpha = 0.0;
         }
         otherPlayer.playerInfo = playerInfo;

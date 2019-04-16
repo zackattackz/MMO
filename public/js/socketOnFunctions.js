@@ -14,9 +14,10 @@ function initializeSocketOnEvents(scene) {
             //If the id matches the id of the CURRENT PLAYER connection
             if (playerInfo.id === scene.socket.id) {
                 // if the current player is active
-                if (playerInfo.isActive) {
+
                     //Add a new physics object with the image of player.png, set it to scene.player (a variable)
                     scene.player = scene.physics.add.image(100, playerInfo.y, "player");
+                    scene.player.alpha = 0.0;
 
                     //Get half the height of player.png to be used later
                     scene.HALFHEIGHT = scene.player.body.halfHeight;
@@ -45,9 +46,6 @@ function initializeSocketOnEvents(scene) {
                     scene.player.body.world.on('worldbounds', death);
 
 
-
-
-                }
                 //If the id does not match the id of the CURRENT PLAYER connection
             } else {
                 // if the other player is active TODO: For now since every player is always inactive, use !... but later when isActive is implemented remove the !
@@ -87,15 +85,42 @@ function initializeSocketOnEvents(scene) {
         scene.otherPlayers.getChildren().forEach( player => {
             //If the playerWhoChangedIsActive's id matched the id of one of the otherPlayer's children
             if (playerWhoChangedIsActive.id === player.playerInfo.id) {
-                //Set that players info to the updated info
-                player.playerInfo = playerWhoChangedIsActive;
-                player.alpha = 0.0;
+                if(playerWhoChangedIsActive.isActive){
+                    player.playerInfo = playerWhoChangedIsActive;
+                    player.alpha = 0.3;
+                    console.log('player visible');
+                } else {
+                    //Set that players info to the updated info
+                    player.playerInfo = playerWhoChangedIsActive;
+                    player.alpha = 0.0;
+                }
             }
         });
     });
 
     scene.socket.on('createPipes', hole => {
         scene.createPipes(hole);
+    });
+
+    scene.socket.on('showWaitingForPlayers', () => {
+        scene.waitingText.alpha = 1.0;
+    });
+
+    scene.socket.on('countDownTime', countDownTime => {
+        scene.waitingText.alpha = 0.0;
+        scene.countDownText.alpha = 1.0;
+        scene.countDownText.setText("GAME START IN " + countDownTime);
+
+    });
+
+    scene.socket.on('startGame', () => {
+
+        scene.player.setVisible(true);
+        scene.player.alpha = 1.0;
+        scene.countDownText.alpha = 0.0;
+        scene.player.setPosition(100, 300);
+        scene.player.isActive = true;
+        scene.socket.emit('updateIsActive', true);
     })
 
 }
