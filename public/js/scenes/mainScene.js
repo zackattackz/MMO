@@ -27,7 +27,7 @@
         this.waitingText = this.add.text(225,150, "WAITING FOR PLAYERS...", { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"});
         this.waitingText.alpha = 0.0;
 
-        this.countDownText = this.add.text(225,150, "", { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"});
+        this.countDownText = this.add.text(225,150, "", { font: "bold 32px Arial", fill: "#ff0000", boundsAlignH: "center", boundsAlignV: "middle"});
         this.countDownText.alpha = 0.0;
 
         initializeSocketOnEvents(this);
