@@ -2,8 +2,8 @@ let mysql = require('mysql');
 
 
 let con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
+    host: "us-cdbr-iron-east-02.cleardb.net",
+    user: process.env.MysqlUser,
     password: process.env.MysqlPass,
     database: "flappydb"
 });
