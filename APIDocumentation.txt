@@ -1,0 +1,39 @@
+\\\gameState.js///
+
+gameState is an object that the server (app.js) will initialize on runtime
+
+gameState params:
+
+    1.) state: Object - This is an object that will be constantly modified and sent to players via sockets
+
+        state params:
+
+            1.) players: Object - This is an object representing the info of current players connected to the server (from here -
+                - on the info is referred to as the playerInfo object)
+
+                players params:
+
+                    1.) name: String - Represents the display name of a player
+                    2.) isActive: Boolean - Represents whether a player is currently playing a game. If false they will spectate
+                    3.) y: Integer - Represents the distance in pixels of the player from the top of the phaser game space.
+                    4.) id: String - Represents the socket id of the player/server connection
+
+           2.) pipes: Array - TODO Add pipes functionality
+
+           3.) gameIsActive: Boolean - Represents whether a game is currently in play. If false then the cooldown between games is happening
+
+
+    2.) addPlayer(id: String): undefined - Will add a new playerInfo obj with corresponding id to gameState.state.players
+
+    3.) removePlayer(id: String): undefined - Will remove the player from gameState.state.players with matching id, if it exists
+
+    4.) UpdateY(id: String, y: Integer): undefined - Updates y value of playerInfo obj in players that has id == parameter id
+
+    5.) UpdateName(id: String, name: String): undefined - Updates name value of playerInfo obj in players that has id == parameter id
+
+    6.) UpdateIsActive(id: String, isActive: Boolean): undefined - Updates isActive value of playerInfo obj in players that has id == parameter id
+
+    7.) getPlayerCount(): Integer - Returns the count of how many playerInfo objs are in the players object
+
+    8.) findWinner(): String - Will search through each playerInfo obj in players and check if only one is active and return that player's
+                               id. Otherwise return empty string.
