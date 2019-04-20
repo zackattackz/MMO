@@ -3,58 +3,32 @@ function initializeSocketOnEvents(scene) {
     //triggers receivePlayers for this player
     scene.socket.emit("getInitialPlayers");
 
+    scene.socket.emit('getHighScoreObject');
+
+    let processPlayers = players => {
+        Object.values(players).forEach(playerInfo => { //begin loop
+            scene.addOtherPlayer(playerInfo);
+        });
+    };
+
     //When we receive the response from the server, fire a callback function with the received players object
     //For info on players object see MMO/js/gameState.js
     //triggered by getInitialPlayers
     scene.socket.on("receivePlayers", players => { //begin callback
-
-        //For each id in the players object (ids are stored as keys), do the following
-        Object.values(players).forEach(playerInfo => { //begin loop
-
-            //If the id matches the id of the CURRENT PLAYER connection
-            if (playerInfo.id === scene.socket.id) {
-                // if the current player is active
-
-                    //Add a new physics object with the image of player.png, set it to scene.player (a variable)
-                    scene.player = scene.physics.add.image(100, playerInfo.y, "player");
-                    scene.player.alpha = 0.0;
-
-                    //Get half the height of player.png to be used later
-                    scene.HALFHEIGHT = scene.player.body.halfHeight;
-
-                    //Enable collisions with the edges of the world
-                    scene.player.body.collideWorldBounds = true;
-
-                    let death = function() {
-                        if(scene.player.isActive) {
-                            console.log('overlapped');
-                            scene.player.isActive = false;
-                            scene.player.setVisible(false);
-                            scene.socket.emit('updateIsActive', false);
-                        }
-                    };
-
-                    scene.physics.add.overlap(scene.player, scene.pipes, death);
-
-                    scene.player.isActive = true;
-
-                    // Turn on wall collision checking for your sprite
-                    scene.player.setCollideWorldBounds(true);
-
-                    scene.player.body.onWorldBounds = true;
-
-                    scene.player.body.world.on('worldbounds', death);
-
-
-                //If the id does not match the id of the CURRENT PLAYER connection
-            } else {
-                // if the other player is active TODO: For now since every player is always inactive, use !... but later when isActive is implemented remove the !
-                //Call scene.addOtherPlayers with an argument of the other player's info
-                scene.addOtherPlayer(playerInfo);
-                //scene.addOtherPlayer is defined after update method
-            }
-        })
+        processPlayers(players);
     });
+
+    scene.socket.on('receiveHighScoreObject', highScoreObject => {
+        if (scene.highScoreText.text !== "") {
+            scene.highScoreAlertText.setText(highScoreObject.name + " set a new high score of " + highScoreObject.score + "!!!!");
+            scene.highScoreAlertText.alpha = 1.0;
+            setTimeout(() => scene.highScoreAlertText.alpha = 0.0, 2500);
+        }
+
+        scene.highScoreText.setText("-----High Score-----\n" + highScoreObject.name + ": " + highScoreObject.score);
+
+    });
+
     scene.socket.on('playerJoined', player => {
         //Just add that new player just like how the initial players were added
         scene.addOtherPlayer(player)
@@ -104,23 +78,84 @@ function initializeSocketOnEvents(scene) {
 
     scene.socket.on('showWaitingForPlayers', () => {
         scene.waitingText.alpha = 1.0;
+        scene.gameEndText.alpha = 0.0;
     });
 
     scene.socket.on('countDownTime', countDownTime => {
         scene.waitingText.alpha = 0.0;
+        scene.gameEndText.alpha = 0.0;
         scene.countDownText.alpha = 1.0;
         scene.countDownText.setText("GAME START IN " + countDownTime);
 
     });
+    
+    scene.socket.on('receiveSelf', player => {
+        // if the current player is active
+
+        //Add a new physics object with the image of player.png, set it to scene.player (a variable)
+        scene.player = scene.physics.add.image(100, player.y, "player");
+        scene.player.alpha = 0.0;
+        //Get half the height of player.png to be used later
+        scene.HALFHEIGHT = scene.player.body.halfHeight;
+        scene.player.enableCollisions = false;
+
+        //Enable collisions with the edges of the world
+        scene.player.body.collideWorldBounds = true;
+
+        let death = function() {
+            if(scene.player.isActive && scene.player.enableCollisions) {
+                scene.player.enableCollisions = false;
+                scene.player.isActive = false;
+                scene.player.alpha = 0.0;
+                scene.socket.emit('updateIsActive', false);
+            }
+        };
+
+        scene.player.isActive = true;
+
+        // Turn on wall collision checking for your sprite
+        scene.player.setCollideWorldBounds(true);
+
+        scene.player.body.onWorldBounds = true;
+
+        scene.physics.add.overlap(scene.player, scene.pipes, death);
+
+        scene.player.body.world.on('worldbounds', death);
+    });
 
     scene.socket.on('startGame', () => {
 
-        scene.player.setVisible(true);
-        scene.player.alpha = 1.0;
+        if(scene.player) {
+            scene.player.setPosition(100, 300);
+            scene.player.isActive = true;
+            scene.player.enableCollisions = true;
+            scene.socket.emit('updateIsActive', true);
+            scene.player.alpha = 1.0;
+        }
+
         scene.countDownText.alpha = 0.0;
-        scene.player.setPosition(100, 300);
-        scene.player.isActive = true;
-        scene.socket.emit('updateIsActive', true);
-    })
+
+    });
+
+    scene.socket.on('endGame', endInfo => {
+        if(endInfo.winner === undefined) { 
+            scene.gameEndText.setText("THERE WAS A TIE, OOPS...");
+        }
+        else if(endInfo.winner.id === scene.socket.id) {
+            scene.gameEndText.setText("YOU HAVE WON WITH A SCORE OF " + endInfo.time + "!!!\n\n\n "+ " ".repeat(21) + "CONGRATS!");
+        } else {
+            scene.gameEndText.setText(endInfo.winner.name + " HAS WON WITH A SCORE OF " + endInfo.time + "!!!");
+        }
+        if(scene.player) {
+            scene.socket.emit('updateIsActive', false);
+            scene.player.alpha = 0.0;
+        }
+        scene.gameEndText.alpha = 1.0;
+    });
+
+    scene.socket.on('cancelGame', () => {
+        scene.countDownText.alpha = 0.0;
+        scene.gameEndText.alpha = 0.0;
+    });
 
 }

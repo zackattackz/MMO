@@ -16,6 +16,7 @@
         Used to set up socket connection, socket functions, keyboard actions, physics groups, and any variables
      */
     create() {
+
         //establish socket connection with server
         this.socket = io();
 
@@ -23,12 +24,27 @@
         this.otherPlayers = this.add.group();
 
         this.pipes = this.add.group();
+        this.pipes.setDepth(100);
 
-        this.waitingText = this.add.text(225,150, "WAITING FOR PLAYERS...", { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle"});
+        this.waitingText = this.add.text(225,150, "WAITING FOR PLAYERS...", { font: "bold 32px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle", stroke: '#000000', strokeThickness: 6});
         this.waitingText.alpha = 0.0;
+        this.waitingText.setDepth(2);
 
-        this.countDownText = this.add.text(225,150, "", { font: "bold 32px Arial", fill: "#ff0000", boundsAlignH: "center", boundsAlignV: "middle"});
+        this.countDownText = this.add.text(225,150, "", { font: "bold 32px Arial", fill: "#ff0000", boundsAlignH: "center", boundsAlignV: "middle", stroke: '#000000', strokeThickness: 6});
         this.countDownText.alpha = 0.0;
+        this.countDownText.setDepth(3);
+
+        this.gameEndText = this.add.text(225,150, "", { font: "bold 18px Arial", fill: "#f6f413", boundsAlignH: "center", boundsAlignV: "middle", stroke: '#000000', strokeThickness: 4});
+        this.gameEndText.alpha = 0.0;
+        this.gameEndText.setDepth(3);
+
+        this.highScoreText = this.add.text(750,10, "", { font: "15px Arial", fill: "#ffffff", stroke: '#000000', strokeThickness: 2});
+        this.highScoreText.setDepth(4);
+
+        this.highScoreAlertText = this.add.text(10, 10, "", { font: "32px Arial", fill: "#ffffff", stroke: '#000000', strokeThickness: 6});
+        this.highScoreAlertText.alpha = 0.0;
+        this.highScoreAlertText.setDepth(5);
+
 
         initializeSocketOnEvents(this);
 
@@ -48,19 +64,8 @@
                     this.socket.emit("updateY", this.player.body.y + this.HALFHEIGHT);//add 20 bc its offset from center
                     this.pingInterval = 0
                 }
-            } else {
-                if(this.checkPlayersAreActive(this.otherPlayers)) {
-                    //Handle if there are other active players
-                } else {
-                    //Handle if there aren't any other active players
-                }
             }
         }
-        //
-        // if(this.countDownHappening) {
-        //     this.countDownTime -= 1/60;
-        //     this.countDownText.setText("GAME START IN " + Math.ceil(this.countDownTime))
-        // }
 
     }
     //only triggered when a new player joins, make sure all properties of player match those in receivePlayers
@@ -81,18 +86,6 @@
             this.player.setDepth(1)
         }
 
-    }
-
-    checkPlayersAreActive(otherPlayers) {
-        let activeOtherPlayersCount = 0;
-        otherPlayers.getChildren().forEach(otherPlayer => {
-            if (otherPlayer.playerInfo.isActive) {
-                activeOtherPlayersCount++;
-            }
-        });
-
-        //returns true if there are any other active players, false otherwise
-        return activeOtherPlayersCount !== 0
     }
 
      addOnePipe(x, y) {
@@ -119,18 +112,5 @@
 
         }
     }
-
-     killPlayer(body) {
-         // Check if the body's game object is the sprite you are listening for
-         // Stop physics and render updates for this object
-         if (this.player) {
-             if (this.player.isActive) {
-                 this.player.isActive = false;
-                 this.player.setVisible(false);
-                 this.socket.emit('updateIsActive', false);
-             }
-         }
-     }
-
 
 }

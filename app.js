@@ -2,16 +2,16 @@ let express = require('express');
 let app = express();
 let server = require('http').Server(app);
 let io = require('socket.io').listen(server);
+let db = require('./db');
+
+db.con.connect();
 
 let gameState = require("./js/gameState");
 
 app.use(express.static(__dirname + '/public'));
 
-//DEMO PURPOSES ONLY
-app.use(express.static(__dirname + '/demo1'));
-
-app.get("/demo", (req, res) => {
-    res.sendFile(__dirname + "/demo1/index.html");
+app.get("/game", (req, res) => {
+    res.sendFile(__dirname + "/public/game.html");
 });
 
 ////////////////////
@@ -20,10 +20,15 @@ io.on('connection', function (socket) {
 
     console.log("user connected");
     //Add current new user to gameState, isActive set to False, name = guest
-    gameState.addPlayer(socket.id);
 
-    //broadcast new player joined event, adds player to the group in mainScene
-    socket.broadcast.emit('playerJoined', gameState.state.players[socket.id]);
+    socket.on("playerName", name => {
+        gameState.addPlayer(socket.id, name);
+        let player = gameState.state.players[socket.id];
+        socket.broadcast.emit('playerJoined', player);
+        io.to(socket.id).emit('receiveSelf', player);
+
+
+    });
 
     socket.on('disconnect', function () {
         console.log('user disconnected');
@@ -34,7 +39,6 @@ io.on('connection', function (socket) {
 
     socket.on('updateIsActive', isActive => {
         gameState.updateIsActive(socket.id, isActive);
-        console.log(isActive);
         socket.broadcast.emit('playerChangedActive', gameState.state.players[socket.id]);
     });
 
@@ -53,25 +57,30 @@ io.on('connection', function (socket) {
         io.to(socket.id).emit('receivePlayers', gameState.state.players);
     });
 
-    //DEMO ONLY
-    socket.on('updatePlayer', (info) => {
-        gameState.updatePlayer(info.id, info.y, false);
+    socket.on('getHighScoreObject', () => {
+        io.to(socket.id).emit('receiveHighScoreObject', gameState.state.highScoreObject)
     });
-
 
 });
 
+//game states and variables\\
+
 let playerCheckInterval = null;
 let pipeEmitInterval = null;
+let checkForWinnerInterval = null;
+let startTime = null;
+let endTime = null;
+
+let highScoreObject = null;
 
 let countDownTime = 5.0;
 
+
 function startPlayerCheckInterval() {
     playerCheckInterval = setInterval(() => {
-        let playerNum = Object.keys(gameState.state.players).length;
-        if (playerNum === 0) {
-            //do nothing
-        } else if(playerNum === 1) {
+        let playerNum = gameState.getPlayerCount();
+
+        if(playerNum <= 1) {
             io.emit('showWaitingForPlayers');
         } else {
             clearInterval(playerCheckInterval);
@@ -86,7 +95,13 @@ function startPlayerCheckInterval() {
 
             setTimeout(() => {
                 clearInterval(countDownTimer);
-                startGame();
+                console.log(gameState.getPlayerCount());
+                if(gameState.getPlayerCount() > 1){
+                    startGame();
+                } else {
+                    startPlayerCheckInterval();
+                    io.emit('cancelGame');
+                }
             }, 6000)
         }
     }, 10)
@@ -94,21 +109,69 @@ function startPlayerCheckInterval() {
 
 function startGame() {
 
+    gameState.state.activePlayers = 0;
+    startTime = new Date();
     io.emit('startGame');
     startPipeEmitInterval();
+    startCheckForWinnerInterval();
+
+
 }
 
+function startCheckForWinnerInterval() {
+    checkForWinnerInterval = setInterval(() => {
+        if(gameState.state.activePlayers <= 1) {
+            let winnerid = gameState.findWinner();
+            endGame(winnerid)
+        }
+    }, 10)
+}
 
 
 function startPipeEmitInterval() {
     pipeEmitInterval = setInterval(() => io.emit('createPipes', Math.floor(Math.random() * 5)), 3000);
 }
 
-server.listen(8081, function () {
-    console.log(`Listening on ${server.address().port}`);
+function endGame(winnerid) {
+
+    endTime = new Date();
+    let totalGameTime = Math.floor((endTime - startTime) / 1000);//winner's score
+
+
+    clearInterval(checkForWinnerInterval);
+    clearInterval(pipeEmitInterval);
+
+    let winner = gameState.state.players[winnerid];
+    io.emit('endGame', {winner: winner, time: totalGameTime});
+
+    if(winner !== undefined) {
+        db.getHighScoreObject(highScoreObject => {
+            if (totalGameTime > highScoreObject.score) {
+                io.emit('receiveHighScoreObject', {name: winner.name, score: totalGameTime});
+                db.updateHighScore(winner.name, totalGameTime);
+                gameState.state.highScoreObject = {name: winner.name, score: totalGameTime};
+            }
+        });
+    }
+    setTimeout(() => {
+        startPlayerCheckInterval()
+    }, 5500)
+
+
+}
+
+//SERVER INITIALIZATION
+
+db.getHighScoreObject(highScoreObject => {
+    gameState.state.highScoreObject = highScoreObject;
+
+    server.listen(8081, function () {
+        console.log(gameState);
+        console.log(`Listening on ${server.address().port}`);
+    });
+
+    //Begin checking if enough players are in server to start
+    startPlayerCheckInterval();
 });
-
-
-startPlayerCheckInterval();
 
 
