@@ -4,6 +4,7 @@
   "description": "flappy bird multiplayer",
   "main": "index.js",
   "scripts": {
+    "start": "node app",
     "test": "jest"
   },
   "repository": {
