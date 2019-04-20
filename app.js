@@ -165,7 +165,7 @@ function endGame(winnerid) {
 db.getHighScoreObject(highScoreObject => {
     gameState.state.highScoreObject = highScoreObject;
 
-    server.listen(8081, function () {
+    server.listen(process.env.PORT, function () {
         console.log(gameState);
         console.log(`Listening on ${server.address().port}`);
     });
