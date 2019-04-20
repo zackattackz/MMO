@@ -5,7 +5,7 @@ let con = mysql.createConnection({
     host: "us-cdbr-iron-east-02.cleardb.net",
     user: process.env.MysqlUser,
     password: process.env.MysqlPass,
-    database: "flappydb"
+    database: "heroku_d8d8caa44ad8a05"
 });
 
 
