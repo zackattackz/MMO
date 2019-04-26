@@ -47,6 +47,7 @@ function initializeSocketOnEvents(scene) {
         scene.otherPlayers.getChildren().forEach( player => {
             //If the playerWhoMoved's id matched the id of one of the otherPlayer's children
             if (playerWhoMoved.id === player.playerInfo.id) {
+                console.log(playerWhoMoved.y);
                 //Set that players info to the updated info
                 player.playerInfo = playerWhoMoved;
                 //Set that players position to correspond with the new y value - moving the player on the client side
