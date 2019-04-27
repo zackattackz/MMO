@@ -35,11 +35,15 @@ io.on('connection', function (socket) {
 
 
     socket.on('updateIsActive', isActive => {
+        console.log("changedIsActive " + socket.id)
+        console.log(isActive)
         gameState.updateIsActive(socket.id, isActive);
         socket.broadcast.emit('playerChangedActive', gameState.state.players[socket.id]);
     });
 
     socket.on('updateY', y => {
+        console.log("moved " + socket.id)
+        console.log(y)
         gameState.updateY(socket.id, y);
         socket.broadcast.emit("playerMoved", gameState.state.players[socket.id]); //send updated player to all other players
     });
