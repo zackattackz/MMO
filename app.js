@@ -110,7 +110,6 @@ function startPlayerCheckInterval() {
 
 function startGame() {
 
-    gameState.state.activePlayers = 0;
     startTime = new Date();
     io.emit('startGame');
     startPipeEmitInterval();
@@ -121,6 +120,7 @@ function startGame() {
 
 function startCheckForWinnerInterval() {
     checkForWinnerInterval = setInterval(() => {
+        console.log(gameState.state.activePlayers)
         if(gameState.state.activePlayers <= 1) {
             let winnerid = gameState.findWinner();
             endGame(winnerid)
@@ -137,7 +137,7 @@ function endGame(winnerid) {
 
     endTime = new Date();
     let totalGameTime = Math.floor((endTime - startTime) / 1000);//winner's score
-
+    gameState.state.activePlayers = 0;
 
     clearInterval(checkForWinnerInterval);
     clearInterval(pipeEmitInterval);
