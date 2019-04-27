@@ -52,7 +52,7 @@ let gameState = {
     },
 
     findWinner: function() {
-        const players = Object.values(this.state.players);//Get all players
+        const players = Object.keys(this.state.players).map(id => this.state.players[id]);//Get all players
         let activePlayers = 0;
         let winnerId = "";
 
