@@ -112,11 +112,13 @@ function initializeSocketOnEvents(scene) {
             }
         };
 
-        scene.player.isActive = true;
+        scene.player.isActive = false;
 
         // Turn on wall collision checking for your sprite
         scene.player.setCollideWorldBounds(true);
 
+        
+        
         scene.player.body.onWorldBounds = true;
 
         scene.physics.add.overlap(scene.player, scene.pipes, death);
