@@ -2,9 +2,6 @@ let express = require('express');
 let app = express();
 let server = require('http').Server(app);
 let io = require('socket.io').listen(server);
-let db = require('./db');
-
-db.con.connect();
 
 let gameState = require("./js/gameState");
 
@@ -58,7 +55,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('getHighScoreObject', () => {
-        io.to(socket.id).emit('receiveHighScoreObject', gameState.state.highScoreObject)
+        io.to(socket.id).emit('receiveHighScoreObject', {name: "zack", score: 100})
     });
 
 });
@@ -143,16 +140,6 @@ function endGame(winnerid) {
 
     let winner = gameState.state.players[winnerid];
     io.emit('endGame', {winner: winner, time: totalGameTime});
-
-    if(winner !== undefined) {
-        db.getHighScoreObject(highScoreObject => {
-            if (totalGameTime > highScoreObject.score) {
-                io.emit('receiveHighScoreObject', {name: winner.name, score: totalGameTime});
-                db.updateHighScore(winner.name, totalGameTime);
-                gameState.state.highScoreObject = {name: winner.name, score: totalGameTime};
-            }
-        });
-    }
     setTimeout(() => {
         startPlayerCheckInterval()
     }, 5500)
@@ -161,16 +148,16 @@ function endGame(winnerid) {
 }
 
 //SERVER INITIALIZATION
-
-db.getHighScoreObject(highScoreObject => {
-    gameState.state.highScoreObject = highScoreObject;
-
-    server.listen(process.env.PORT, function () {
+server.listen(8080, function () {
         console.log(gameState);
         console.log(`Listening on ${server.address().port}`);
-    });
+});
 
     //Begin checking if enough players are in server to start
-    startPlayerCheckInterval();
-});
+startPlayerCheckInterval();
+//db.getHighScoreObject(highScoreObject => {
+   // gameState.state.highScoreObject = highScoreObject;
+
+   
+//});
 
