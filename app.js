@@ -94,7 +94,6 @@ function startPlayerCheckInterval() {
 
             setTimeout(() => {
                 clearInterval(countDownTimer);
-                console.log(gameState.getPlayerCount());
                 if(gameState.getPlayerCount() > 1){
                     startGame();
                 } else {
@@ -119,7 +118,6 @@ function startGame() {
 
 function startCheckForWinnerInterval() {
     checkForWinnerInterval = setInterval(() => {
-        console.log(gameState.state.activePlayers)
         if(gameState.state.activePlayers <= 1) {
             let winnerid = gameState.findWinner();
             endGame(winnerid)
@@ -163,6 +161,7 @@ function endGame(winnerid) {
 //SERVER INITIALIZATION
 db.getHighScoreObject(highScoreObject => {
     gameState.state.highScoreObject = highScoreObject;
+    console.log(highScoreObject);
 
     server.listen(8081, function () {
         console.log(gameState);
