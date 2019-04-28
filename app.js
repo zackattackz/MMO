@@ -56,7 +56,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('getHighScoreObject', () => {
-        io.to(socket.id).emit('receiveHighScoreObject', {name: "zack", score: 100})
+        io.to(socket.id).emit('receiveHighScoreObject', gameState.state.highScoreObject)
     });
 
 });
