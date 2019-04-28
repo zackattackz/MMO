@@ -36,9 +36,7 @@ let gameState = {
     updateIsActive: function(id, isActive) {
         let player = this.state.players[id];
         player.isActive = isActive;
-        if(isActive){
-            this.state.activePlayers += 1;
-        } else {
+        if(!isActive){
             this.state.activePlayers -= 1;
         }
     },
