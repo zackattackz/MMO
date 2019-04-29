@@ -52,7 +52,11 @@
 
         this.pingInterval = 0;
         this.input.on('pointerdown', pointer => {
-            if(this.player) this.player.setVelocity(0, -420);
+            if(this.player) {
+                if(this.player.isActive) {
+                    this.player.setVelocity(0, -420);
+                }
+            }
         });
     }
 
