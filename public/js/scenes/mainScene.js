@@ -50,7 +50,6 @@
 
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        this.pingInterval = 0;
         this.input.on('pointerdown', pointer => {
             if(this.player) {
                 if(this.player.isActive) {
@@ -66,11 +65,8 @@
                 if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
                     this.player.setVelocity(0, -420);
                 }
-                if (this.pingInterval++ === 1) {
-                    //sent to app.js
-                    this.socket.emit("updateY", this.player.body.y + this.HALFHEIGHT);//add 20 bc its offset from center
-                    this.pingInterval = 0
-                }
+                //sent to app.js
+                this.socket.emit("updateY", Math.round(this.player.body.y + this.HALFHEIGHT));//add 20 bc its offset from center
             }
         }
 
