@@ -51,6 +51,9 @@
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.pingInterval = 0;
+        this.input.on('pointerdown', pointer => {
+            if(this.player) this.player.setVelocity(0, -420);
+        });
     }
 
     update(dt) {
